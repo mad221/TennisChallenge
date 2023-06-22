@@ -19,34 +19,27 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late double halfGameWidth;
 
   double direction = 0;
-  double positionX = 1;
+  double positionX = 500;
+  Vector2 ballPosition = Vector2(600, 500);
 
   double playerSpeed = 500;
+  double ballSpeed = 100;
 
   FlameGame();
 
   @override
   void render(Canvas canvas) {
-    player1 = Player(color: Colors.red)
-      ..x = positionX
-      ..y = size.y * 0.01
-      ..width = size.x * 0.1
-      ..height = size.y * 0.1;
-    player1.render(canvas);
+
 
     player2 = Player(color: Colors.blue)
-      ..x = size.x / 2 - 50
-      ..y = size.y * 0.1
+      ..x = positionX
+      ..y = 500
       ..width = size.x * 0.1
       ..height = size.y * 0.1;
     player2.render(canvas);
     halfGameWidth = size.x / 2;
 
-    ball = Ball()
-      ..x = positionX
-      ..y = size.y / 2
-      ..width = size.x * 0.1
-      ..height = size.y * 0.1;
+    ball = Ball(pos: ballPosition);
     ball.render(canvas);
   }
 
@@ -86,7 +79,14 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   }
 
   @override
-  void update(double dt) {
+  void update(double dt) {    
+    double distanceToMove = ballSpeed * dt;
+    Vector2 ballDirection = Vector2(600,0) - ballPosition;
+    ballDirection.normalize();
+    Vector2 ballMove = ballDirection * distanceToMove;
+    ballPosition += ballMove;
+
+
     if (direction != 0) {
       if (positionX + (direction * dt * playerSpeed) > size.x - size.x * 0.1) {
         positionX = size.x - size.x * 0.1;
