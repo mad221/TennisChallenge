@@ -1,9 +1,8 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class Player extends PositionComponent with CollisionCallbacks {
+class Player extends PositionComponent {
   late Rect playerRect;
   late Color color;
 
@@ -19,11 +18,5 @@ class Player extends PositionComponent with CollisionCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    print('collision');
   }
 }

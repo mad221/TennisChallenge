@@ -15,12 +15,13 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late Player player1;
   late Player player2;
   late Ball ball;
+  double ballDirection = 1;
 
   late double halfGameWidth;
 
   double direction = 0;
   double positionX = 500;
-  Vector2 ballPosition = Vector2(600, 500);
+  Vector2 ballPosition = Vector2(500, 500);
 
   double playerSpeed = 500;
   double ballSpeed = 100;
@@ -29,18 +30,24 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   @override
   void render(Canvas canvas) {
-
+    player1 = Player(color: Colors.green)
+      ..x = positionX
+      ..y = size.y * 0.1
+      ..width = size.x * 0.1
+      ..height = size.y * 0.1;
+    player1.render(canvas);
 
     player2 = Player(color: Colors.blue)
       ..x = positionX
-      ..y = 500
+      ..y = size.y * 0.9
       ..width = size.x * 0.1
       ..height = size.y * 0.1;
     player2.render(canvas);
-    halfGameWidth = size.x / 2;
 
     ball = Ball(pos: ballPosition);
     ball.render(canvas);
+
+    halfGameWidth = size.x / 2;
   }
 
   bool isInScreen(double x) {
@@ -78,15 +85,28 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     return true;
   }
 
+  bool checkRectangleCircleCollision(
+      Rect rectangle, Offset circleCenter, double circleRadius) {
+    // Convertir les coordonnées du rectangle en coin inférieur gauche et coin supérieur droit
+    double rectLeft = rectangle.left;
+    double rectRight = rectangle.right;
+    double rectTop = rectangle.top;
+    double rectBottom = rectangle.bottom;
+
+    // Trouver les coordonnées les plus proches du cercle à l'intérieur du rectangle
+    double closestX = circleCenter.dx.clamp(rectLeft, rectRight);
+    double closestY = circleCenter.dy.clamp(rectTop, rectBottom);
+
+    // Calculer la distance entre le cercle et le point le plus proche
+    double distance =
+        Vector2(circleCenter.dx - closestX, circleCenter.dy - closestY).length;
+
+    // Vérifier si la distance est inférieure ou égale au rayon du cercle
+    return distance <= circleRadius;
+  }
+
   @override
-  void update(double dt) {    
-    double distanceToMove = ballSpeed * dt;
-    Vector2 ballDirection = Vector2(600,0) - ballPosition;
-    ballDirection.normalize();
-    Vector2 ballMove = ballDirection * distanceToMove;
-    ballPosition += ballMove;
-
-
+  void update(double dt) {
     if (direction != 0) {
       if (positionX + (direction * dt * playerSpeed) > size.x - size.x * 0.1) {
         positionX = size.x - size.x * 0.1;
@@ -96,5 +116,23 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         positionX += direction * dt * playerSpeed;
       }
     }
+    // detect if player touch the ball
+    // convert ballCircle to Rect
+
+    if (checkRectangleCircleCollision(
+        player1.playerRect,
+        Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
+        ball.ballCircle.radius)) {
+      ballDirection = 1;
+    }
+
+    if (checkRectangleCircleCollision(
+        player2.playerRect,
+        Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
+        ball.ballCircle.radius)) {
+      ballDirection = -1;
+    }
+
+    ballPosition += Vector2(0, ballDirection) * dt * ballSpeed;
   }
 }

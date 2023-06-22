@@ -11,7 +11,7 @@ class Ball extends PositionComponent with CollisionCallbacks {
   late Vector2 pos;
   Color color = Colors.yellow;
 
-  Ball({required this.pos}){
+  Ball({required this.pos}) {
     ballCircle = Circle(pos, 10);
   }
   @override
@@ -25,7 +25,6 @@ class Ball extends PositionComponent with CollisionCallbacks {
   void update(double dt) {
     super.update(dt);
   }
-  
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
