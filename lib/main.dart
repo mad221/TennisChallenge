@@ -2,6 +2,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tennis_game/tennisCourt.dart';
 
 import 'ball.dart';
 import 'player.dart';
@@ -15,6 +16,8 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late Player player1;
   late Player player2;
   late Ball ball;
+  late TennisCourt tennisCourt;
+
   double ballDirection = 1;
 
   late double halfGameWidth;
@@ -30,16 +33,23 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   @override
   void render(Canvas canvas) {
-    player1 = Player(color: Colors.green)
+    tennisCourt = TennisCourt(screenSize: size)
+      ..x = 10
+      ..y = 10
+      ..width = size.x - 20
+      ..height = size.y - 20;
+    tennisCourt.render(canvas);
+
+    player1 = Player(color: Colors.red)
       ..x = positionX
-      ..y = size.y * 0.1
+      ..y = size.y * 0.05
       ..width = size.x * 0.1
       ..height = size.y * 0.1;
     player1.render(canvas);
 
     player2 = Player(color: Colors.blue)
       ..x = positionX
-      ..y = size.y * 0.9
+      ..y = size.y * 0.85
       ..width = size.x * 0.1
       ..height = size.y * 0.1;
     player2.render(canvas);
