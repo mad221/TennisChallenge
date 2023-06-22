@@ -11,6 +11,9 @@ import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import 'ball.dart';
+import 'player.dart';
+
 void main() {
   final game = FlameGame();
   runApp(GameWidget(game: game));
@@ -28,7 +31,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   double playerSpeed = 500;
 
-  FlameGame() {}
+  FlameGame();
 
   @override
   void render(Canvas canvas) {
@@ -101,53 +104,5 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         positionX += direction * dt * playerSpeed;
       }
     }
-  }
-}
-
-class Ball extends PositionComponent with CollisionCallbacks {
-  Circle ballCircle = Circle(Vector2(10, 5), 10);
-  Color color = Colors.yellow;
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    Offset offset = Offset(ballCircle.center.x, ballCircle.center.y);
-    canvas.drawCircle(offset, 10, Paint()..color = color);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    print('collision');
-  }
-}
-
-class Player extends PositionComponent with CollisionCallbacks {
-  late Rect playerRect;
-  late Color color;
-
-  Player({required this.color});
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    playerRect = toRect();
-    canvas.drawRect(playerRect, Paint()..color = color);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    print('collision');
   }
 }
