@@ -33,11 +33,11 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   @override
   void render(Canvas canvas) {
-    tennisCourt = TennisCourt(screenSize: size)
-      ..x = 10
+    tennisCourt = TennisCourt()
+      ..x = size.x * 0.25
       ..y = 10
-      ..width = size.x - 20
-      ..height = size.y - 20;
+      ..width = size.x * 0.50
+      ..height = size.y * 0.99;
     tennisCourt.render(canvas);
 
     player1 = Player(color: Colors.red)
@@ -61,7 +61,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   }
 
   bool isInScreen(double x) {
-    return (x > 0 && x < size.x);
+    return (x > size.x * 0.25 && x < size.x * 0.75);
   }
 
   @override
@@ -118,10 +118,11 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   @override
   void update(double dt) {
     if (direction != 0) {
-      if (positionX + (direction * dt * playerSpeed) > size.x - size.x * 0.1) {
-        positionX = size.x - size.x * 0.1;
-      } else if (positionX + (direction * dt * playerSpeed) < 0) {
-        positionX = 1;
+      if (positionX + (direction * dt * playerSpeed) >=
+          size.x * 0.75 - player1.width) {
+        positionX = size.x * 0.75 - player1.width;
+      } else if (positionX + (direction * dt * playerSpeed) <= size.x * 0.25) {
+        positionX = size.x * 0.25 + 2;
       } else {
         positionX += direction * dt * playerSpeed;
       }

@@ -4,8 +4,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 class TennisCourt extends PositionComponent {
-  late Vector2 screenSize;
-
   late Rect tennisCounrtRect;
   late Rect tennisCounrtRectMidlePart;
   late Rect tennisCounrtRectMidleInPart1MidlePart;
@@ -18,8 +16,6 @@ class TennisCourt extends PositionComponent {
   late Rect bitougnouBottom;
 
   Color color = Colors.white;
-
-  TennisCourt({required this.screenSize});
 
   @override
   void render(Canvas canvas) {
