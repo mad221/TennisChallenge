@@ -7,9 +7,13 @@ import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 
 class Ball extends PositionComponent with CollisionCallbacks {
-  Circle ballCircle = Circle(Vector2(10, 5), 10);
+  late Circle ballCircle;
+  late Vector2 pos;
   Color color = Colors.yellow;
 
+  Ball({required this.pos}){
+    ballCircle = Circle(pos, 10);
+  }
   @override
   void render(Canvas canvas) {
     super.render(canvas);
@@ -21,6 +25,7 @@ class Ball extends PositionComponent with CollisionCallbacks {
   void update(double dt) {
     super.update(dt);
   }
+  
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
