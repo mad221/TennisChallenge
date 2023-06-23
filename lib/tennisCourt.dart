@@ -1,17 +1,33 @@
 // class who draw the tennis court with rect in 2d
 
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 
 class TennisCourt extends PositionComponent {
-  late Rect tennisCounrtRect;
-  late Rect tennisCounrtRectMidlePart;
-  late Rect tennisCounrtRectMidleInPart1MidlePart;
-  late Rect tennisCounrtRectMidleInPart1MidlePart1;
-  late Rect tennisCounrtRectMidleInPart1MidlePart2;
-  late Rect tennisCounrtRectMidleInPart2MidlePart;
-  late Rect tennisCounrtRectMidleInPart2MidlePart1;
-  late Rect tennisCounrtRectMidleInPart2MidlePart2;
+  // get the position of the bounds of the player in the tennis court
+  late double minPosPlayerX;
+  late double maxPosPlayerX;
+
+  // get the position of the bounds of the bot in the tennis court
+  late double minPostBotX;
+  late double maxPostBotX;
+
+  TennisCourt() {
+    minPosPlayerX = size.x * 0.24;
+    maxPosPlayerX = size.x * 0.75;
+
+    minPostBotX = size.x * 0.15;
+    maxPostBotX = size.x * 0.85;
+  }
+
+  late Path tennisCourtPath;
+  late Path tennisCourtMidlePartPath;
+  late Path tennisCourtLongLinePath1;
+  late Path tennisCourtLongLinePath2;
+  late Path tennisCourtMidleInPart1MidlePartPath;
+  late Path tennisCourtMidleInPart2MidlePartPath;
+
   late Rect bitougnouTop;
   late Rect bitougnouBottom;
 
@@ -21,93 +37,87 @@ class TennisCourt extends PositionComponent {
   void render(Canvas canvas) {
     super.render(canvas);
     Paint paint = Paint()
-      ..color = Colors.white // Couleur des côtés du rectangle (blanc)
+      ..color = Colors.green // Couleur des côtés du rectangle (blanc)
       ..style =
-          PaintingStyle.stroke // Définir le style de dessin comme une ligne
-      ..strokeWidth = 15.0; // Largeur de la ligne des côtés du rectangle
+          PaintingStyle.fill; // Définir le style de dessin comme une ligne
 
-    tennisCounrtRect = toRect();
-    tennisCounrtRectMidlePart = Rect.fromLTWH(
-        tennisCounrtRect.left,
-        tennisCounrtRect.top,
-        tennisCounrtRect.width,
-        tennisCounrtRect.height / 2);
+    tennisCourtPath = Path();
+    tennisCourtPath.moveTo(size.x * 0.25, 10); // Coin supérieur gauche
+    tennisCourtPath.lineTo(size.x * 0.75, 10); // Coin supérieur droit
+    tennisCourtPath.lineTo(
+        size.x * 0.85, size.y * 0.99); // Coin inférieur droit
 
-    bitougnouTop = Rect.fromLTWH(
-        tennisCounrtRect.left + tennisCounrtRect.width / 2,
-        tennisCounrtRectMidlePart.top,
-        1,
-        15);
+    tennisCourtPath.lineTo(
+        size.x * 0.15, size.y * 0.99); // Coin inférieur gauche
+    tennisCourtPath.lineTo(size.x * 0.25, 10); // Coin supérieur gauche
+    tennisCourtPath.close(); // Fermer le rectangle
 
-    bitougnouBottom = Rect.fromLTWH(
-        tennisCounrtRect.left + tennisCounrtRect.width / 2,
-        tennisCounrtRectMidlePart.top +
-            tennisCounrtRectMidlePart.height * 2 -
-            15,
-        1,
-        15);
-
-    tennisCounrtRectMidleInPart1MidlePart = Rect.fromLTWH(
-        tennisCounrtRectMidlePart.left +
-            tennisCounrtRectMidlePart.width * 0.25 / 2,
-        tennisCounrtRectMidlePart.top,
-        tennisCounrtRectMidlePart.width * 0.75,
-        tennisCounrtRectMidlePart.height);
-
-    tennisCounrtRectMidleInPart1MidlePart1 = Rect.fromLTWH(
-        tennisCounrtRectMidleInPart1MidlePart.left,
-        tennisCounrtRectMidleInPart1MidlePart.top +
-            tennisCounrtRectMidleInPart1MidlePart.height / 2,
-        tennisCounrtRectMidleInPart1MidlePart.width / 2,
-        tennisCounrtRectMidleInPart1MidlePart.height / 2);
-
-    tennisCounrtRectMidleInPart1MidlePart2 = Rect.fromLTWH(
-        tennisCounrtRectMidleInPart1MidlePart.left +
-            tennisCounrtRectMidleInPart1MidlePart.width / 2,
-        tennisCounrtRectMidleInPart1MidlePart.top +
-            tennisCounrtRectMidleInPart1MidlePart.height / 2,
-        tennisCounrtRectMidleInPart1MidlePart.width / 2,
-        tennisCounrtRectMidleInPart1MidlePart.height / 2);
-
-    tennisCounrtRectMidleInPart2MidlePart = Rect.fromLTWH(
-        tennisCounrtRectMidlePart.left +
-            tennisCounrtRectMidlePart.width * 0.25 / 2,
-        tennisCounrtRectMidlePart.top + tennisCounrtRectMidlePart.height,
-        tennisCounrtRectMidlePart.width * 0.75,
-        tennisCounrtRectMidlePart.height);
-
-    tennisCounrtRectMidleInPart2MidlePart1 = Rect.fromLTWH(
-        tennisCounrtRectMidleInPart2MidlePart.left +
-            tennisCounrtRectMidleInPart2MidlePart.width * 0.50,
-        tennisCounrtRectMidleInPart2MidlePart.top,
-        tennisCounrtRectMidleInPart2MidlePart.width * 0.50,
-        tennisCounrtRectMidleInPart2MidlePart.height / 2);
-
-    tennisCounrtRectMidleInPart2MidlePart2 = Rect.fromLTWH(
-        tennisCounrtRectMidleInPart2MidlePart.left,
-        tennisCounrtRectMidleInPart2MidlePart.top,
-        tennisCounrtRectMidleInPart2MidlePart.width * 0.50,
-        tennisCounrtRectMidleInPart2MidlePart.height / 2);
-
-    canvas.drawRect(tennisCounrtRect, paint);
-    paint = Paint()
-      ..color = Colors.green // Couleur transparente
-      ..style =
-          PaintingStyle.fill; // Définir le style de dessin comme un remplissage
-
-    canvas.drawRect(tennisCounrtRect, paint);
+    canvas.drawPath(tennisCourtPath, paint);
 
     paint = Paint()
       ..color = Colors.white // Couleur transparente
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 8;
-    canvas.drawRect(tennisCounrtRectMidlePart, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart1MidlePart, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart1MidlePart1, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart1MidlePart2, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart2MidlePart, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart2MidlePart1, paint);
-    canvas.drawRect(tennisCounrtRectMidleInPart2MidlePart2, paint);
+      ..strokeWidth = 5; // Définir le style de dessin comme une ligne
+    canvas.drawPath(tennisCourtPath, paint);
+
+    tennisCourtMidlePartPath = Path();
+    tennisCourtMidlePartPath.moveTo(
+        size.x * 0.205, size.y * 0.45); // Coin supérieur gauche
+    tennisCourtMidlePartPath.lineTo(
+        size.x * 0.795, size.y * 0.45); // Coin supérieur droit
+    canvas.drawPath(tennisCourtMidlePartPath, paint);
+    tennisCourtPath.close(); // Fermer le rectangle
+
+    tennisCourtLongLinePath1 = Path();
+    tennisCourtLongLinePath1.moveTo(size.x * 0.32, 10); // Coin supérieur gauche
+    tennisCourtLongLinePath1.lineTo(
+        size.x * 0.25, size.y * 0.99); // Coin supérieur droit
+    canvas.drawPath(tennisCourtLongLinePath1, paint);
+
+    tennisCourtLongLinePath2 = Path();
+    tennisCourtLongLinePath2.moveTo(size.x * 0.68, 10); // Coin supérieur gauche
+    tennisCourtLongLinePath2.lineTo(
+        size.x * 0.75, size.y * 0.99); // Coin supérieur droit
+    canvas.drawPath(tennisCourtLongLinePath2, paint);
+
+    tennisCourtMidleInPart1MidlePartPath = Path();
+    tennisCourtMidleInPart1MidlePartPath.moveTo(
+        size.x * 0.50, size.y * 0.45); // Coin supérieur gauche
+    tennisCourtMidleInPart1MidlePartPath.lineTo(
+        // Coin supérieur droit
+        size.x * 0.50,
+        size.y * 0.75);
+    tennisCourtMidleInPart1MidlePartPath.lineTo(
+        // Coin supérieur droit
+        size.x * 0.267,
+        size.y * 0.75);
+    tennisCourtMidleInPart1MidlePartPath.lineTo(
+        // Coin supérieur droit
+        size.x * 0.733,
+        size.y * 0.75);
+    canvas.drawPath(tennisCourtMidleInPart1MidlePartPath, paint);
+
+    tennisCourtMidleInPart2MidlePartPath = Path();
+    tennisCourtMidleInPart2MidlePartPath.moveTo(
+        size.x * 0.50, size.y * 0.50); // Coin supérieur gauche
+    tennisCourtMidleInPart2MidlePartPath.lineTo(
+        // Coin supérieur droit
+        size.x * 0.50,
+        size.y * 0.23);
+    tennisCourtMidleInPart2MidlePartPath.lineTo(
+        // Coin supérieur gauche
+        size.x * 0.305,
+        size.y * 0.23);
+    tennisCourtMidleInPart2MidlePartPath.lineTo(
+        // Coin supérieur droit
+        size.x * 0.695,
+        size.y * 0.23);
+    canvas.drawPath(tennisCourtMidleInPart2MidlePartPath, paint);
+
+    bitougnouTop = Rect.fromLTWH(size.x * 0.5, 10, 1, 10);
+
+    bitougnouBottom = Rect.fromLTWH(size.x * 0.5, size.y - 25, 1, 15);
+
     canvas.drawRect(bitougnouTop, paint);
     canvas.drawRect(bitougnouBottom, paint);
   }

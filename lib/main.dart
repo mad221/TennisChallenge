@@ -34,10 +34,10 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   @override
   void render(Canvas canvas) {
     tennisCourt = TennisCourt()
-      ..x = size.x * 0.25
-      ..y = 10
-      ..width = size.x * 0.50
-      ..height = size.y * 0.99;
+      ..x = size.x
+      ..y = 0
+      ..width = size.x
+      ..height = size.y;
     tennisCourt.render(canvas);
 
     player1 = Player(color: Colors.red)
