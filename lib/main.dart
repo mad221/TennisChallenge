@@ -90,12 +90,13 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   ) {
     if (event is RawKeyDownEvent && isInScreen(positionX) == true) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !isCatch) {
-        print("left");
         direction = -1;
         player1Animation.selectLeftAnimation();
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         direction = 1;
         player1Animation.selectRightAnimation();
+      } else if (event.logicalKey == LogicalKeyboardKey.space) {
+        isCatch = false;
       }
     } else if (event is RawKeyUpEvent) {
       direction = 0;
