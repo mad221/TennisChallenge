@@ -30,23 +30,29 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late double positionX;
   late Vector2 ballPosition;
 
-  double playerSpeed = 500;
-  double ballSpeed = 400;
+  double playerSpeed = 200;
+  double ballSpeed = 100;
 
   String imagesPlayerLeft = 'sprites/playerOneMovementLeft.png';
   String imagesPlayerRight = 'sprites/playerOneMovementRight.png';
   String imagesBotLeft = 'sprites/botPlayerOnMovementLeft.png';
   String imagesBotRight = 'sprites/botPlayerOnMovementRight.png';
+  String imagesBotRightSmash = 'sprites/botPlayerOnMovementRightSmash.png';
+  String imagesBotLeftSmash = 'sprites/botPlayerOnMovementLeftSmash.png';
 
   FlameGame() {
     playerAnimation = PlayerAnimation(
         playerImage: images,
         pathImageLeft: imagesPlayerLeft,
-        pathImageRight: imagesPlayerRight);
+        pathImageRight: imagesPlayerRight,
+        pathImageLeftSmash: imagesBotLeftSmash,
+        pathImageRightSmash: imagesBotRightSmash);
     botAnimation = PlayerAnimation(
         playerImage: images,
         pathImageLeft: imagesBotLeft,
-        pathImageRight: imagesBotRight);
+        pathImageRight: imagesBotRight,
+        pathImageLeftSmash: imagesBotLeftSmash,
+        pathImageRightSmash: imagesBotRightSmash);
   }
 
   @override
@@ -72,7 +78,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       ..x = positionX
       ..y = size.y * 0.01
       ..width = size.x * 0.05
-      ..height = size.y * 0.1;
+      ..height = size.y * 0.06;
     player1.render(canvas);
 
     player2 =
@@ -181,14 +187,16 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       }
     }
 
-    playerAnimation.update(direction == 0 ? 0 : dt);
-    botAnimation.update(direction == 0 ? 0 : dt);
+    playerAnimation.update(direction, dt);
+
+    botAnimation.update(direction, dt);
     // detect if player touch the ball
     // convert ballCircle to Rect
     if (checkRectangleCircleCollision(
         player1.playerRect,
         Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
         ball.ballCircle.radius)) {
+      botAnimation.smash(ballPosition.x, player1.x);
       ballDirection = 1;
     }
 
@@ -201,9 +209,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
     if (!ballIsOut() && isCatch == false) {
       ballPosition += Vector2(0, ballDirection) * dt * ballSpeed;
-      print("direction: $direction");
     } else {
-      print("else");
       //ball is out
       isCatch = true;
       direction = 0;
