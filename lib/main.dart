@@ -19,17 +19,23 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late TennisCourt tennisCourt;
 
   double ballDirection = 1;
-
+  bool isCatch = false;
   late double halfGameWidth;
 
   double direction = 0;
-  double positionX = 500;
-  Vector2 ballPosition = Vector2(500, 500);
+  late double positionX;
+  late Vector2 ballPosition;
 
   double playerSpeed = 500;
-  double ballSpeed = 100;
+  double ballSpeed = 800;
 
   FlameGame();
+
+  Future<void> onLoad() async {
+    halfGameWidth = size.x / 2;
+    ballPosition = Vector2(halfGameWidth, size.y * 0.9);
+    positionX = halfGameWidth;
+  }
 
   @override
   void render(Canvas canvas) {
@@ -56,8 +62,6 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
     ball = Ball(pos: ballPosition);
     ball.render(canvas);
-
-    halfGameWidth = size.x / 2;
   }
 
   bool isInScreen(double x) {
@@ -70,10 +74,16 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     if (event is RawKeyDownEvent && isInScreen(positionX) == true) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !isCatch) {
+        print("left");
         direction = -1;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+          !isCatch) {
         direction = 1;
+        print("right");
+      } else if (event.logicalKey == LogicalKeyboardKey.space) {
+        print("space");
+        isCatch = false;
       }
     } else if (event is RawKeyUpEvent) {
       direction = 0;
@@ -115,8 +125,18 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     return distance <= circleRadius;
   }
 
+  bool ballIsOut() {
+    if (ballPosition.y < -300 || ballPosition.y > size.y * 1.5) {
+      positionX = halfGameWidth;
+      ballDirection = 0;
+      return true;
+    }
+    return false;
+  }
+
   @override
   void update(double dt) {
+    // Get ball in the area
     if (direction != 0) {
       if (positionX + (direction * dt * playerSpeed) >=
           size.x * 0.75 - player1.width) {
@@ -127,9 +147,9 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         positionX += direction * dt * playerSpeed;
       }
     }
+
     // detect if player touch the ball
     // convert ballCircle to Rect
-
     if (checkRectangleCircleCollision(
         player1.playerRect,
         Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
@@ -144,6 +164,19 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       ballDirection = -1;
     }
 
-    ballPosition += Vector2(0, ballDirection) * dt * ballSpeed;
+    if (!ballIsOut() && isCatch == false) {
+      ballPosition += Vector2(0, ballDirection) * dt * ballSpeed;
+      print("direction: $direction");
+    } else {
+      print("else");
+      //ball is out
+      isCatch = true;
+      direction = 0;
+      if (ballPosition.y > size.y * 1.5) {
+        ballPosition = Vector2(halfGameWidth, player2.y);
+      } else if (ballPosition.y < 0) {
+        ballPosition = Vector2(halfGameWidth, player1.y);
+      }
+    }
   }
 }
