@@ -118,7 +118,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     player2 =
         Player(color: Colors.transparent) // change the color to get the hitBox
           ..x = positionX
-          ..y = size.y * 0.85
+          ..y = size.y * 0.87
           ..width = size.x * 0.05
           ..height = size.y * 0.1;
     player2.render(canvas);
