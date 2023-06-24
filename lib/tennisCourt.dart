@@ -37,7 +37,8 @@ class TennisCourt extends PositionComponent {
   void render(Canvas canvas) {
     super.render(canvas);
     Paint paint = Paint()
-      ..color = Colors.green // Couleur des côtés du rectangle (blanc)
+      ..color = const Color.fromARGB(
+          255, 255, 164, 27) // Couleur des côtés du rectangle (blanc)
       ..style =
           PaintingStyle.fill; // Définir le style de dessin comme une ligne
 

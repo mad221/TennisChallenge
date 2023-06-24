@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tennis_game/tennisCourt.dart';
+import 'player_animation.dart';
 
 import 'ball.dart';
 import 'player.dart';
@@ -17,6 +18,8 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late Player player2;
   late Ball ball;
   late TennisCourt tennisCourt;
+  late PlayerAnimation player1Animation;
+  bool isLoaded = false;
 
   double ballDirection = 1;
   bool isCatch = false;
@@ -29,9 +32,14 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   double playerSpeed = 500;
   double ballSpeed = 800;
 
-  FlameGame();
+  FlameGame() {
+    player1Animation = PlayerAnimation(playerImage: images);
+  }
 
+  @override
   Future<void> onLoad() async {
+    await player1Animation.onLoad().then((value) => isLoaded = true);
+
     halfGameWidth = size.x / 2;
     ballPosition = Vector2(halfGameWidth, size.y * 0.9);
     positionX = halfGameWidth;
@@ -46,19 +54,26 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       ..height = size.y;
     tennisCourt.render(canvas);
 
-    player1 = Player(color: Colors.red)
+    player1 = Player(color: Colors.blue)
       ..x = positionX
       ..y = size.y * 0.05
       ..width = size.x * 0.1
       ..height = size.y * 0.1;
     player1.render(canvas);
 
-    player2 = Player(color: Colors.blue)
-      ..x = positionX
-      ..y = size.y * 0.85
-      ..width = size.x * 0.1
-      ..height = size.y * 0.1;
+    player2 =
+        Player(color: Colors.transparent) // change the color to get the hitBox
+          ..x = positionX
+          ..y = size.y * 0.85
+          ..width = size.x * 0.05
+          ..height = size.y * 0.1;
     player2.render(canvas);
+
+    if (isLoaded == true) {
+      Rect pos = Rect.fromLTWH(positionX - (size.x * 0.09) / 4.5, size.y * 0.80,
+          size.x * 0.09, size.y * 0.15);
+      player1Animation.render(canvas, pos);
+    }
 
     ball = Ball(pos: ballPosition);
     ball.render(canvas);
@@ -75,14 +90,12 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   ) {
     if (event is RawKeyDownEvent && isInScreen(positionX) == true) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !isCatch) {
-        print("left");
         direction = -1;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          !isCatch) {
+        player1Animation.selectLeftAnimation();
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         direction = 1;
-        print("right");
+        player1Animation.selectRightAnimation();
       } else if (event.logicalKey == LogicalKeyboardKey.space) {
-        print("space");
         isCatch = false;
       }
     } else if (event is RawKeyUpEvent) {
@@ -148,6 +161,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       }
     }
 
+    player1Animation.update(direction == 0 ? 0 : dt);
     // detect if player touch the ball
     // convert ballCircle to Rect
     if (checkRectangleCircleCollision(
