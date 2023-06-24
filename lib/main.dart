@@ -31,6 +31,12 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   FlameGame();
 
+  Future<void> onLoad() async {
+    halfGameWidth = size.x / 2;
+    ballPosition = Vector2(halfGameWidth, size.y * 0.9);
+    positionX = halfGameWidth;
+  }
+
   @override
   void render(Canvas canvas) {
     tennisCourt = TennisCourt()
