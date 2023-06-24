@@ -13,7 +13,7 @@ class PlayerAnimation {
 
   Future<void> onLoad() async {
     // Note that you could also use Sprite.load for this.
-    final imgLeft = await playerImage.load('sprites/playerOneMovement.png');
+    final imgLeft = await playerImage.load('sprites/playerOneMovementLeft.png');
     final imgRight =
         await playerImage.load('sprites/playerOneMovementRight.png');
 
@@ -38,11 +38,15 @@ class PlayerAnimation {
   }
 
   void selectLeftAnimation() {
-    player1AnimationSelect = player1AnimationMoveLeft;
+    if (player1AnimationSelect != player1AnimationMoveLeft) {
+      player1AnimationSelect = player1AnimationMoveLeft;
+    }
   }
 
   void selectRightAnimation() {
-    player1AnimationSelect = player1AnimationMoveRight;
+    if (player1AnimationSelect != player1AnimationMoveRight) {
+      player1AnimationSelect = player1AnimationMoveRight;
+    }
   }
 
   void render(Canvas canvas, Rect player) {

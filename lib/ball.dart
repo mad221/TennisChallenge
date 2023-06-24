@@ -29,6 +29,5 @@ class Ball extends PositionComponent with CollisionCallbacks {
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    print('collision');
   }
 }

@@ -160,8 +160,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       }
     }
 
-    player1Animation.update(dt);
-
+    player1Animation.update(direction == 0 ? 0 : dt);
     // detect if player touch the ball
     // convert ballCircle to Rect
     if (checkRectangleCircleCollision(
