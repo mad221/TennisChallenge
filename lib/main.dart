@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,10 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   String imagesBotRightSmash = 'sprites/botPlayerOnMovementRightSmash.png';
   String imagesBotLeftSmash = 'sprites/botPlayerOnMovementLeftSmash.png';
 
+  Image? tennisNet;
+
+  late SpriteAnimation tennisNetSprite;
+
   FlameGame() {
     playerAnimation = PlayerAnimation(
         playerImage: images,
@@ -64,20 +69,45 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     await playerAnimation.onLoad().then((value) => isLoaded = true);
     await botAnimation.onLoad().then((value) => isLoaded = true);
 
+    await images.load('sprites/tennisNet.png').then((value) => {
+          tennisNetSprite = SpriteAnimation.fromFrameData(
+              value,
+              SpriteAnimationData.sequenced(
+                amount: 1,
+                textureSize: Vector2(6, 6),
+                stepTime: 0.1,
+                loop: false,
+              ))
+        });
+
     halfGameWidth = size.x / 2;
     ballPosition = Vector2(halfGameWidth, size.y * 0.9);
     positionX = halfGameWidth;
   }
 
+  void drawTennisNet(Canvas canvas) {
+    double tennisNetWidth = 24;
+    double tennisBorderleft = size.x - (size.x * 0.205);
+    double tennisBorderRight = size.x - (size.x * 0.795);
+    double tennisBorder = tennisBorderleft - tennisBorderRight;
+
+    for (int i = 0; i * tennisNetWidth < tennisBorder; i++) {
+      tennisNetSprite.getSprite().renderRect(
+          canvas,
+          Rect.fromLTWH(
+              i * tennisNetWidth + size.x * 0.200, size.y * 0.40, 24, 36));
+    }
+  }
+
   @override
   void render(Canvas canvas) {
-    tennisCourt = TennisCourt()
+    tennisCourt = TennisCourt(image: images)
       ..x = size.x
       ..y = 0
       ..width = size.x
       ..height = size.y;
     tennisCourt.render(canvas);
-
+    drawTennisNet(canvas);
     player1 = Player(color: Colors.transparent)
       ..x = positionX
       ..y = size.y * 0.01

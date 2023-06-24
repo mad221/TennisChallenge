@@ -1,5 +1,6 @@
 // class who draw the tennis court with rect in 2d
 
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,7 @@ class TennisCourt extends PositionComponent {
   late double minPostBotX;
   late double maxPostBotX;
 
-  TennisCourt() {
-    minPosPlayerX = size.x * 0.24;
-    maxPosPlayerX = size.x * 0.75;
-
-    minPostBotX = size.x * 0.15;
-    maxPostBotX = size.x * 0.85;
-  }
+  late Images image;
 
   late Path tennisCourtPath;
   late Path tennisCourtMidlePartPath;
@@ -32,6 +27,14 @@ class TennisCourt extends PositionComponent {
   late Rect bitougnouBottom;
 
   Color color = Colors.white;
+
+  TennisCourt({required this.image}) {
+    minPosPlayerX = size.x * 0.24;
+    maxPosPlayerX = size.x * 0.75;
+
+    minPostBotX = size.x * 0.15;
+    maxPostBotX = size.x * 0.85;
+  }
 
   @override
   void render(Canvas canvas) {

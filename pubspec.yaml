@@ -71,6 +71,7 @@ flutter:
     - assets/images/sprites/botPlayerOnMovementLeftSmash.png
     - assets/images/sprites/playerOnMovementLeftSmash.png
     - assets/images/sprites/playerOnMovementRightSmash.png
+    - assets/images/sprites/tennisNet.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
