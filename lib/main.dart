@@ -35,6 +35,9 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   String imagesPlayerLeft = 'sprites/playerOneMovementLeft.png';
   String imagesPlayerRight = 'sprites/playerOneMovementRight.png';
+  String imagesPlaterLeftSmash = 'sprites/playerOnMovementLeftSmash.png';
+  String imagesPlaterRightSmash = 'sprites/playerOnMovementRightSmash.png';
+
   String imagesBotLeft = 'sprites/botPlayerOnMovementLeft.png';
   String imagesBotRight = 'sprites/botPlayerOnMovementRight.png';
   String imagesBotRightSmash = 'sprites/botPlayerOnMovementRightSmash.png';
@@ -45,8 +48,9 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         playerImage: images,
         pathImageLeft: imagesPlayerLeft,
         pathImageRight: imagesPlayerRight,
-        pathImageLeftSmash: imagesBotLeftSmash,
-        pathImageRightSmash: imagesBotRightSmash);
+        pathImageLeftSmash: imagesPlaterLeftSmash,
+        pathImageRightSmash: imagesPlaterRightSmash);
+
     botAnimation = PlayerAnimation(
         playerImage: images,
         pathImageLeft: imagesBotLeft,
@@ -204,6 +208,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         player2.playerRect,
         Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
         ball.ballCircle.radius)) {
+      playerAnimation.smash(ballPosition.x, player2.x);
       ballDirection = -1;
     }
 
