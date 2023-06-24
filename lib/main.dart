@@ -133,7 +133,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       botAnimation.render(canvas, posBot);
     }
 
-    ball = Ball(pos: ballPosition);
+    ball = Ball(pos: ballPosition, screenSize: size);
     ball.render(canvas);
   }
 
