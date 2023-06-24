@@ -56,7 +56,7 @@ class PlayerAnimation {
         SpriteAnimationData.sequenced(
           amount: 6,
           textureSize: Vector2(32, 32),
-          stepTime: 0.08,
+          stepTime: 0.05,
           loop: false,
         ));
 
@@ -65,7 +65,7 @@ class PlayerAnimation {
         SpriteAnimationData.sequenced(
             amount: 6,
             textureSize: Vector2(32, 32),
-            stepTime: 0.08,
+            stepTime: 0.05,
             loop: false));
 
     spriteMoveSelected = playerMoveRight;
