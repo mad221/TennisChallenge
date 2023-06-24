@@ -8,14 +8,18 @@ class PlayerAnimation {
   late SpriteAnimation player1AnimationMoveRight;
   late SpriteAnimation player1AnimationSelect;
   late Images playerImage;
+  late String pathImageLeft;
+  late String pathImageRight;
 
-  PlayerAnimation({required this.playerImage});
+  PlayerAnimation(
+      {required this.playerImage,
+      required this.pathImageLeft,
+      required this.pathImageRight});
 
   Future<void> onLoad() async {
     // Note that you could also use Sprite.load for this.
-    final imgLeft = await playerImage.load('sprites/playerOneMovementLeft.png');
-    final imgRight =
-        await playerImage.load('sprites/playerOneMovementRight.png');
+    final imgLeft = await playerImage.load(pathImageLeft);
+    final imgRight = await playerImage.load(pathImageRight);
 
     player1AnimationMoveLeft = SpriteAnimation.fromFrameData(
         imgLeft,
