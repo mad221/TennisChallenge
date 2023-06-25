@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 class PlayerAnimation {
   late SpriteAnimation playerMoveLeft;
@@ -91,6 +92,9 @@ class PlayerAnimation {
     }
     spriteSmashSelected.reset();
     isSmash = true;
+    FlameAudio.play('smash.wav', volume: 0.95)
+        .then((value) => print('loaded'))
+        .onError((error, stackTrace) => print('Error: $error'));
   }
 
   void render(Canvas canvas, Rect player) {

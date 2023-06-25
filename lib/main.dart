@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tennis_game/tennisCourt.dart';
@@ -68,6 +69,9 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   Future<void> onLoad() async {
     await playerAnimation.onLoad().then((value) => isLoaded = true);
     await botAnimation.onLoad().then((value) => isLoaded = true);
+
+    await FlameAudio.audioCache
+        .loadAll(['sounds/backgroundMusic.mp3', 'smash.wav']);
 
     await images.load('sprites/tennisNet.png').then((value) => {
           tennisNetSprite = SpriteAnimation.fromFrameData(
@@ -174,6 +178,12 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
 
   @override
   bool onTapUp(TapUpInfo info) {
+    if (FlameAudio.bgm.isPlaying == false) {
+      FlameAudio.bgm
+          .play('backgroundMusic.mp3', volume: 0.25)
+          .then((value) => print('loaded'))
+          .onError((error, stackTrace) => print('Error: $error'));
+    }
     direction = 0;
     return true;
   }

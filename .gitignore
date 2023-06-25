@@ -25,3 +25,10 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+windows/flutter/*.cmake
+windows/flutter/*.cc
+macos/Flutter/GeneratedPluginRegistrant.swift
+linux/flutter/generated_plugins.cmake
+linux/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+pubspec.lock

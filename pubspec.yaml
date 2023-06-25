@@ -31,7 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flame: 
+  flame: 1.7.3
+  flame_audio: ^2.0.0
 
 
 
@@ -72,6 +73,8 @@ flutter:
     - assets/images/sprites/playerOnMovementLeftSmash.png
     - assets/images/sprites/playerOnMovementRightSmash.png
     - assets/images/sprites/tennisNet.png
+    - assets/audio/backgroundMusic.mp3
+    - assets/audio/smash.wav
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
