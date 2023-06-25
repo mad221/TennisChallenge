@@ -74,6 +74,7 @@ flutter:
     - assets/images/sprites/playerOnMovementRightSmash.png
     - assets/images/sprites/tennisNet.png
     - assets/audio/backgroundMusic.mp3
+    - assets/audio/smash.wav
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

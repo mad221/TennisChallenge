@@ -70,7 +70,8 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     await playerAnimation.onLoad().then((value) => isLoaded = true);
     await botAnimation.onLoad().then((value) => isLoaded = true);
 
-    await FlameAudio.audioCache.load('backgroundMusic.mp3');
+    await FlameAudio.audioCache
+        .loadAll(['sounds/backgroundMusic.mp3', 'smash.wav']);
 
     await images.load('sprites/tennisNet.png').then((value) => {
           tennisNetSprite = SpriteAnimation.fromFrameData(
@@ -179,7 +180,7 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   bool onTapUp(TapUpInfo info) {
     if (FlameAudio.bgm.isPlaying == false) {
       FlameAudio.bgm
-          .play('backgroundMusic.mp3', volume: 0.99)
+          .play('backgroundMusic.mp3', volume: 0.25)
           .then((value) => print('loaded'))
           .onError((error, stackTrace) => print('Error: $error'));
     }
