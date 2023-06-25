@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late Player player2;
   late Ball ball;
   late TennisCourt tennisCourt;
-  late PlayerAnimation player1Animation;
+  late PlayerAnimation playerAnimation;
+  late PlayerAnimation botAnimation;
   bool isLoaded = false;
 
   double ballDirection = 1;
@@ -29,42 +31,94 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
   late double positionX;
   late Vector2 ballPosition;
 
-  double playerSpeed = 500;
-  double ballSpeed = 800;
+  double playerSpeed = 200;
+  double ballSpeed = 100;
+
+  String imagesPlayerLeft = 'sprites/playerOneMovementLeft.png';
+  String imagesPlayerRight = 'sprites/playerOneMovementRight.png';
+  String imagesPlaterLeftSmash = 'sprites/playerOnMovementLeftSmash.png';
+  String imagesPlaterRightSmash = 'sprites/playerOnMovementRightSmash.png';
+
+  String imagesBotLeft = 'sprites/botPlayerOnMovementLeft.png';
+  String imagesBotRight = 'sprites/botPlayerOnMovementRight.png';
+  String imagesBotRightSmash = 'sprites/botPlayerOnMovementRightSmash.png';
+  String imagesBotLeftSmash = 'sprites/botPlayerOnMovementLeftSmash.png';
+
+  Image? tennisNet;
+
+  late SpriteAnimation tennisNetSprite;
 
   FlameGame() {
-    player1Animation = PlayerAnimation(playerImage: images);
+    playerAnimation = PlayerAnimation(
+        playerImage: images,
+        pathImageLeft: imagesPlayerLeft,
+        pathImageRight: imagesPlayerRight,
+        pathImageLeftSmash: imagesPlaterLeftSmash,
+        pathImageRightSmash: imagesPlaterRightSmash);
+
+    botAnimation = PlayerAnimation(
+        playerImage: images,
+        pathImageLeft: imagesBotLeft,
+        pathImageRight: imagesBotRight,
+        pathImageLeftSmash: imagesBotLeftSmash,
+        pathImageRightSmash: imagesBotRightSmash);
   }
 
   @override
   Future<void> onLoad() async {
-    await player1Animation.onLoad().then((value) => isLoaded = true);
+    await playerAnimation.onLoad().then((value) => isLoaded = true);
+    await botAnimation.onLoad().then((value) => isLoaded = true);
+
+    await images.load('sprites/tennisNet.png').then((value) => {
+          tennisNetSprite = SpriteAnimation.fromFrameData(
+              value,
+              SpriteAnimationData.sequenced(
+                amount: 1,
+                textureSize: Vector2(6, 6),
+                stepTime: 0.1,
+                loop: false,
+              ))
+        });
 
     halfGameWidth = size.x / 2;
     ballPosition = Vector2(halfGameWidth, size.y * 0.9);
     positionX = halfGameWidth;
   }
 
+  void drawTennisNet(Canvas canvas) {
+    double tennisNetWidth = 24;
+    double tennisBorderleft = size.x - (size.x * 0.205);
+    double tennisBorderRight = size.x - (size.x * 0.795);
+    double tennisBorder = tennisBorderleft - tennisBorderRight;
+
+    for (int i = 0; i * tennisNetWidth < tennisBorder; i++) {
+      tennisNetSprite.getSprite().renderRect(
+          canvas,
+          Rect.fromLTWH(
+              i * tennisNetWidth + size.x * 0.200, size.y * 0.40, 24, 36));
+    }
+  }
+
   @override
   void render(Canvas canvas) {
-    tennisCourt = TennisCourt()
+    tennisCourt = TennisCourt(image: images)
       ..x = size.x
       ..y = 0
       ..width = size.x
       ..height = size.y;
     tennisCourt.render(canvas);
-
-    player1 = Player(color: Colors.blue)
+    drawTennisNet(canvas);
+    player1 = Player(color: Colors.transparent)
       ..x = positionX
-      ..y = size.y * 0.05
-      ..width = size.x * 0.1
-      ..height = size.y * 0.1;
+      ..y = size.y * 0.01
+      ..width = size.x * 0.05
+      ..height = size.y * 0.06;
     player1.render(canvas);
 
     player2 =
         Player(color: Colors.transparent) // change the color to get the hitBox
           ..x = positionX
-          ..y = size.y * 0.85
+          ..y = size.y * 0.87
           ..width = size.x * 0.05
           ..height = size.y * 0.1;
     player2.render(canvas);
@@ -72,10 +126,14 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     if (isLoaded == true) {
       Rect pos = Rect.fromLTWH(positionX - (size.x * 0.09) / 4.5, size.y * 0.80,
           size.x * 0.09, size.y * 0.15);
-      player1Animation.render(canvas, pos);
+      playerAnimation.render(canvas, pos);
+
+      Rect posBot = Rect.fromLTWH(positionX - (size.x * 0.09) / 4.5,
+          size.y * 0.12 - (size.y * 0.15), size.x * 0.09, size.y * 0.15);
+      botAnimation.render(canvas, posBot);
     }
 
-    ball = Ball(pos: ballPosition);
+    ball = Ball(pos: ballPosition, screenSize: size);
     ball.render(canvas);
   }
 
@@ -91,10 +149,12 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
     if (event is RawKeyDownEvent && isInScreen(positionX) == true) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !isCatch) {
         direction = -1;
-        player1Animation.selectLeftAnimation();
+        playerAnimation.selectLeftAnimation();
+        botAnimation.selectLeftAnimation();
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         direction = 1;
-        player1Animation.selectRightAnimation();
+        playerAnimation.selectRightAnimation();
+        botAnimation.selectRightAnimation();
       } else if (event.logicalKey == LogicalKeyboardKey.space) {
         isCatch = false;
       }
@@ -161,13 +221,16 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
       }
     }
 
-    player1Animation.update(direction == 0 ? 0 : dt);
+    playerAnimation.update(direction, dt);
+
+    botAnimation.update(direction, dt);
     // detect if player touch the ball
     // convert ballCircle to Rect
     if (checkRectangleCircleCollision(
         player1.playerRect,
         Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
         ball.ballCircle.radius)) {
+      botAnimation.smash(ballPosition.x, player1.x);
       ballDirection = 1;
     }
 
@@ -175,14 +238,13 @@ class FlameGame extends Game with KeyboardEvents, TapDetector {
         player2.playerRect,
         Offset(ball.ballCircle.center.x, ball.ballCircle.center.y),
         ball.ballCircle.radius)) {
+      playerAnimation.smash(ballPosition.x, player2.x);
       ballDirection = -1;
     }
 
     if (!ballIsOut() && isCatch == false) {
       ballPosition += Vector2(0, ballDirection) * dt * ballSpeed;
-      print("direction: $direction");
     } else {
-      print("else");
       //ball is out
       isCatch = true;
       direction = 0;
