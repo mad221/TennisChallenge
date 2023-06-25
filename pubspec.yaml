@@ -31,7 +31,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flame: 
+  flame: 1.7.3
 
 
 
