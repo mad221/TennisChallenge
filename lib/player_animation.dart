@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:flame/cache.dart';
-import 'package:flame/components.dart';
+import 'package:flame/game.dart';
+import 'package:flame/sprite.dart';
 
 class PlayerAnimation {
   late SpriteAnimation playerMoveLeft;
